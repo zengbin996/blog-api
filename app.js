@@ -30,8 +30,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 //封装处理方法
 app.use((req, res, next) => {
-  res.cc = (details, message = '操作成功', statusCode = '0') => {
-    res.send({ statusCode, message, details })
+  res.cc = (details, message = 'success') => {
+    res.json({ details, message })
   }
   next()
 })
