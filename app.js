@@ -1,12 +1,11 @@
 const createError = require('http-errors')
 require('dotenv').config()
 const express = require('express')
-require('express-async-errors')
 const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const cors = require('cors')
-const jwt = require('express-jwt')
+const { expressjwt } = require('express-jwt')
 const { ValidationError } = require('express-validation')
 const { MongoError } = require('mongodb')
 
@@ -27,6 +26,13 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
+
+// 授权是否登录
+app.use(
+  expressjwt({ secret: process.env.PRIVATE_KEY, algorithms: ['HS256'] }).unless({
+    path: ['/users', { url: /\/decs\// }],
+  })
+)
 
 //封装处理方法
 app.use((req, res, next) => {
@@ -51,7 +57,6 @@ app.use(function (err, req, res, next) {
   if (err instanceof ValidationError) {
     return res.status(err.statusCode).json(err)
   }
-
   //数据库错误
   if (err instanceof MongoError) {
     return res.status(500).json({
@@ -59,6 +64,7 @@ app.use(function (err, req, res, next) {
       err,
     })
   }
+  res.status(err.status).json(err)
 })
 
 module.exports = app

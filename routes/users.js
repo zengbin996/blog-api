@@ -33,20 +33,19 @@ router.post('/login', validates.register, async function (req, res, next) {
   const single = await collection.findOne(userInfo)
 
   if (single) {
-    const token = jwt.sign(userInfo, 'zb123', { expiresIn: '12h' })
+    const userInfo = { ...single, password: undefined }
+    const token = jwt.sign(userInfo, process.env.PRIVATE_KEY, { expiresIn: '7d' })
 
     res.cc({
-      token: 'Bearer ' + token,
-      expires: new Date(new Date().getTime() + 12 * 60 * 60 * 1000),
+      authorization: {
+        token: token,
+        expires: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+      },
+      userInfo: userInfo,
     })
   } else {
     res.status(400).cc(undefined, '用户名或密码错误')
   }
-})
-
-//退出登录
-router.post('/logout', function (req, res, next) {
-  res.send('logout')
 })
 
 module.exports = router
