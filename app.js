@@ -9,9 +9,9 @@ const { expressjwt } = require('express-jwt')
 const { ValidationError } = require('express-validation')
 const { MongoError } = require('mongodb')
 
-const indexRouter = require('./routes/index')
-const usersRouter = require('./routes/users')
 const docsRouter = require('./routes/docs')
+const indexRouter = require('./routes/index')
+const privateRouter = require('./routes/private')
 const app = express()
 
 //设置跨域请求
@@ -28,11 +28,7 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // 授权是否登录
-app.use(
-  expressjwt({ secret: process.env.PRIVATE_KEY, algorithms: ['HS256'] }).unless({
-    path: ['/users', { url: /\/decs\// }],
-  })
-)
+app.use('/api', expressjwt({ secret: process.env.PRIVATE_KEY, algorithms: ['HS256'] }))
 
 //封装处理方法
 app.use((req, res, next) => {
@@ -44,7 +40,7 @@ app.use((req, res, next) => {
 
 app.use('/decs', docsRouter)
 app.use('/', indexRouter)
-app.use('/api/users', usersRouter)
+app.use('/api', privateRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
