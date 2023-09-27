@@ -1,5 +1,5 @@
-const createError = require('http-errors')
 require('dotenv').config()
+const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
@@ -8,10 +8,10 @@ const cors = require('cors')
 const { expressjwt } = require('express-jwt')
 const { ValidationError } = require('express-validation')
 const { MongoError } = require('mongodb')
-
 const docsRouter = require('./routes/docs')
 const indexRouter = require('./routes/index')
 const privateRouter = require('./routes/private')
+
 const app = express()
 
 //设置跨域请求
@@ -38,9 +38,9 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/decs', docsRouter)
 app.use('/', indexRouter)
 app.use('/api', privateRouter)
+app.use('/decs', docsRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
