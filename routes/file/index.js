@@ -1,3 +1,4 @@
+const router = require('express').Router()
 const COS = require('cos-nodejs-sdk-v5')
 const multer = require('multer')
 
@@ -5,7 +6,6 @@ const cos = new COS({
   SecretId: process.env.SecretId,
   SecretKey: process.env.SecretKey,
 })
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'public/uploads/')
@@ -15,14 +15,25 @@ const storage = multer.diskStorage({
     cb(null, file.originalname)
   },
 })
+const validates = (req, res, next) => {
+  const file = req.file
 
+  if (file) {
+    next()
+  } else {
+    res.status(400).cc(undefined, '请添加文件')
+  }
+}
+
+//保存文件
 const uploadLocal = multer({ storage: storage }).single('file')
 
-const uploadFile = (req, res, next) => {
+const uploadFile = (req, res) => {
   res.cc(req.file)
 }
 
-const uploadFileOss = (req, res, next) => {
+//上传到OSS
+const uploadFileOss = (req, res) => {
   const file = req.file
 
   cos.uploadFile(
@@ -42,8 +53,10 @@ const uploadFileOss = (req, res, next) => {
   )
 }
 
-module.exports = {
-  uploadLocal,
-  uploadFile,
-  uploadFileOss,
-}
+//上传文件 保存到服务器
+router.post('/uploads', uploadLocal, validates, uploadFile)
+
+//上传文件 保存到OSS
+router.post('/uploads-oss', uploadLocal, validates, uploadFileOss)
+
+module.exports = router

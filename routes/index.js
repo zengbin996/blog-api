@@ -1,12 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const validates = require('../validates/users')
-const { register, login } = require('../routers-handler/users')
+const userRouter = require('./user')
+const fileRouter = require('./file')
+const photosRouter = require('./photos')
 
-//注册
-router.post('/register', validates.register, register)
-
-//登录
-router.post('/login', validates.login, login)
+router.use('/user', userRouter)
+router.use('/api/file', fileRouter)
+router.use(photosRouter)
 
 module.exports = router

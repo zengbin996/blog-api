@@ -1,36 +1,32 @@
 const { Joi, validate } = require('express-validation')
+const regexGetter = require('../utils/regexList')
 
-const register = {
+const addUser = validate({
   body: Joi.object({
     username: Joi.string().alphanum().min(5).max(20).required(),
-    password: Joi.string()
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-      .required(),
+    password: Joi.string().regex(regexGetter('password')).required(),
   }),
-}
+})
 
-const login = {
+const AuthSign = validate({
   body: Joi.object({
     username: Joi.string().alphanum().min(5).max(20).required(),
-    password: Joi.string()
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-      .required(),
+    password: Joi.string().regex(regexGetter('password')).required(),
   }),
-}
+})
 
-const resetPassword = {
+const updateUser = validate({
   body: Joi.object({
-    oldPassword: Joi.string()
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
-      .required(),
+    username: Joi.string().alphanum().min(5).max(20).required(),
+    oldPassword: Joi.string().regex(regexGetter('password')).required(),
     newPassword: Joi.string()
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
       .required(),
   }),
-}
+})
 
 module.exports = {
-  register: validate(register),
-  login: validate(login),
-  resetPassword: validate(resetPassword),
+  addUser,
+  AuthSign,
+  updateUser,
 }

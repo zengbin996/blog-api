@@ -8,9 +8,8 @@ const cors = require('cors')
 const { expressjwt } = require('express-jwt')
 const { ValidationError } = require('express-validation')
 const { MongoError } = require('mongodb')
-const docsRouter = require('./routes/docs')
-const indexRouter = require('./routes/index')
-const privateRouter = require('./routes/private')
+const swaggerDecs = require('./docs')
+const indexRouter = require('./routes')
 
 const app = express()
 
@@ -26,6 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(swaggerDecs)
 
 // 授权是否登录
 app.use('/api', expressjwt({ secret: process.env.PRIVATE_KEY, algorithms: ['HS256'] }))
@@ -38,9 +38,7 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/', indexRouter)
-app.use('/api', privateRouter)
-app.use('/decs', docsRouter)
+app.use(indexRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
