@@ -10,6 +10,54 @@
     }
   ],
   "paths": {
+    "/user": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "注册",
+        "operationId": "registerUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "example": "admin1"
+                  },
+                  "password": {
+                    "example": "Abcd1234!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "details": {
+                      "acknowledged": true,
+                      "insertedId": "651e7d340de9ad5ae24a6085"
+                    },
+                    "message": "success"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
+    },
     "/user/authsign": {
       "post": {
         "tags": [
@@ -51,54 +99,6 @@
                         "_id": "651e619921e6b630c30a114b",
                         "username": "admin1"
                       }
-                    },
-                    "message": "success"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid username/password supplied"
-          }
-        }
-      }
-    },
-    "/user": {
-      "post": {
-        "tags": [
-          "user"
-        ],
-        "summary": "注册",
-        "operationId": "registerUser",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "example": "admin1"
-                  },
-                  "password": {
-                    "example": "Abcd1234!"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": {
-                    "details": {
-                      "acknowledged": true,
-                      "insertedId": "651e7d340de9ad5ae24a6085"
                     },
                     "message": "success"
                   }
