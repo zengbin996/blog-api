@@ -1,9 +1,19 @@
 const router = require('express').Router()
 const validates = require('../../utils/validates/photos')
+const { connect } = require('../../utils/db/index')
 
 //新增
-const addPhotos = (req, res) => {
-  res.cc('该接口正在开发中')
+const addPhotos = async (req, res) => {
+  const db = await connect()
+  const collection = db.collection('photos')
+
+  collection
+    .insertOne({
+      ...req.body,
+    })
+    .then((insertResult) => {
+      res.cc(insertResult)
+    })
 }
 
 //删除
