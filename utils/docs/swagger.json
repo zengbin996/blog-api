@@ -58,7 +58,7 @@
         }
       }
     },
-    "/user/authsign": {
+    "/user/auth-sign": {
       "post": {
         "tags": [
           "user"
@@ -72,10 +72,10 @@
                 "type": "object",
                 "properties": {
                   "username": {
-                    "example": "admin1"
+                    "example": "admin123"
                   },
                   "password": {
-                    "example": "Abcd1234!"
+                    "example": "abcD1234!!"
                   }
                 }
               }

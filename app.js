@@ -8,7 +8,7 @@ const cors = require('cors')
 const { expressjwt } = require('express-jwt')
 const { ValidationError } = require('express-validation')
 const { MongoError } = require('mongodb')
-const swaggerDecs = require('./docs')
+const swaggerDecs = require('./utils/docs')
 const indexRouter = require('./routes')
 
 const app = express()

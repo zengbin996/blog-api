@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const validates = require('../../utils/validates/photos')
 
 //新增
 const addPhotos = (req, res) => {
@@ -20,7 +21,7 @@ const getPhotos = (req, res) => {
   res.cc('该接口正在开发中')
 }
 
-router.post('/api/photos', addPhotos)
+router.post('/api/photos', validates.postPhotos, addPhotos)
 router.delete('/api/photos', deletePhotos)
 router.patch('/api/photo', updatePhoto)
 router.get('/photos', getPhotos)

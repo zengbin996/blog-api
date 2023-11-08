@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
-const { connect } = require('../../db/index')
-const validates = require('../../validates/users')
+const { connect } = require('../../utils/db/index')
+const validates = require('../../utils/validates/users')
 
 //注册
 const addUser = async (req, res) => {
@@ -25,7 +25,7 @@ const addUser = async (req, res) => {
 
 //删除账号
 const deleteUser = (req, res) => {
-  res.cc('正在开发中')
+  res.cc('正在开发中...')
 }
 
 //修改
@@ -39,7 +39,7 @@ const updateUser = async (req, res) => {
     collection
       .updateOne(
         {
-          username: req.auth.username,
+          username: req.body.username,
         },
         {
           $set: {
@@ -51,7 +51,7 @@ const updateUser = async (req, res) => {
         res.cc(insertResult)
       })
   } else {
-    res.status(400).cc(undefined, '原密码错误')
+    res.status(400).cc(undefined, 'The user name or password is wrong.')
   }
 }
 
@@ -75,13 +75,13 @@ const getAuthSign = async (req, res) => {
       userInfo: userInfo,
     })
   } else {
-    res.status(400).cc(undefined, '用户名或密码错误')
+    res.status(400).cc(undefined, 'The user name or password is wrong.')
   }
 }
 
 router.post('/', validates.addUser, addUser)
 router.delete('/', deleteUser)
 router.patch('/', validates.updateUser, updateUser)
-router.post('/AuthSign', validates.AuthSign, getAuthSign)
+router.post('/auth-sign', validates.AuthSign, getAuthSign)
 
 module.exports = router

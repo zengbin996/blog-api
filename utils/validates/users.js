@@ -1,5 +1,5 @@
 const { Joi, validate } = require('express-validation')
-const regexGetter = require('../utils/regexList')
+const regexGetter = require('../regexList')
 
 const addUser = validate({
   body: Joi.object({
