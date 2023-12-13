@@ -15,18 +15,23 @@ const AuthSign = validate({
   }),
 })
 
-const updateUser = validate({
+const updatePassword = validate({
   body: Joi.object({
     username: Joi.string().alphanum().min(5).max(20).required(),
-    oldPassword: Joi.string().regex(regexGetter('password')).required(),
-    newPassword: Joi.string()
+    'old-password': Joi.string().regex(regexGetter('password')).required(),
+    'new-password': Joi.string()
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
       .required(),
   }),
 })
 
+const updateUserinfo = validate({
+  body: Joi.object({}),
+})
+
 module.exports = {
   addUser,
   AuthSign,
-  updateUser,
+  updatePassword,
+  updateUserinfo,
 }

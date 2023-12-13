@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const COS = require('cos-nodejs-sdk-v5')
 const multer = require('multer')
+const { getCredential } = require('./oss-sts')
 
 const cos = new COS({
   SecretId: process.env.SecretId,
@@ -53,10 +54,20 @@ const uploadFileOss = (req, res) => {
   )
 }
 
+//获取临时秘钥
+const getTmpSecretKey = (req, res) => {
+  getCredential().then((details) => {
+    res.cc(details)
+  })
+}
+
 //上传文件 保存到服务器
 router.post('/uploads', uploadLocal, validates, uploadFile)
 
 //上传文件 保存到OSS
 router.post('/uploads-oss', uploadLocal, validates, uploadFileOss)
+
+//获取临时秘钥
+router.get('/tmp-key', getTmpSecretKey)
 
 module.exports = router

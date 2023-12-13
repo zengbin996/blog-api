@@ -10,6 +10,8 @@ const { ValidationError } = require('express-validation')
 const { MongoError } = require('mongodb')
 const swaggerDecs = require('./utils/docs')
 const indexRouter = require('./routes')
+const _ = require('lodash')
+const { unless } = require('express-unless')
 
 const app = express()
 
@@ -27,9 +29,6 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(swaggerDecs)
 
-// 授权是否登录
-app.use('/api', expressjwt({ secret: process.env.PRIVATE_KEY, algorithms: ['HS256'] }))
-
 //封装处理方法
 app.use((req, res, next) => {
   res.cc = (details, message = 'success') => {
@@ -38,6 +37,45 @@ app.use((req, res, next) => {
   next()
 })
 
+// 授权是否登录
+const unlessPath = [
+  {
+    url: '/user',
+    methods: ['POST'],
+  },
+  {
+    url: '/user/auth-sign',
+    methods: ['POST'],
+  },
+  {
+    url: '/user/update-password',
+    methods: ['PATCH'],
+  },
+  {
+    url: '/test',
+  },
+]
+app.use(expressjwt({ secret: process.env.PRIVATE_KEY, algorithms: ['HS256'] }).unless({ path: unlessPath }))
+
+// 自定义中间件进行二次验证码验证
+const secondFactorAuthentication = (req, res, next) => {
+  const currentItem = {
+    methods: req.method,
+    url: req.url,
+  }
+
+  const isRule = _.some(req.auth.rules, { s_rule: currentItem })
+
+  if (isRule) {
+    next()
+    return
+  }
+
+  res.status(401).cc('用户没有权限访问')
+}
+
+secondFactorAuthentication.unless = unless
+app.use(secondFactorAuthentication.unless({ path: unlessPath }))
 app.use(indexRouter)
 
 // catch 404 and forward to error handler

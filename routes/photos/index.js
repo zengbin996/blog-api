@@ -27,13 +27,18 @@ const updatePhoto = (req, res) => {
 }
 
 //查询
-const getPhotos = (req, res) => {
-  res.cc('该接口正在开发中')
+const getPhotos = async (req, res) => {
+  const db = await connect()
+  const collection = db.collection('photos')
+
+  collection.find().then((findResult) => {
+    res.cc(findResult)
+  })
 }
 
-router.post('/api/photos', validates.postPhotos, addPhotos)
-router.delete('/api/photos', deletePhotos)
-router.patch('/api/photo', updatePhoto)
+router.post('/photos', validates.postPhotos, addPhotos)
+router.delete('/photos', deletePhotos)
+router.patch('/photo', updatePhoto)
 router.get('/photos', getPhotos)
 
 module.exports = router
